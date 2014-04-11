@@ -1,0 +1,36 @@
+body {
+  padding-top: 3em;
+  padding-bottom: 3em;
+}
+
+#alert-container {
+  position:fixed;
+  z-index:99;
+  max-width: 30em;
+  top:2em;
+  left:2em;
+  right: 3em;
+  margin:auto;
+}
+
+a[ng-click] {
+  cursor: pointer;
+}
+
+.popover-content {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.disabled-entry {
+  opacity:.3;
+}
+
+table {
+  table-layout:fixed;
+}
+
+table th,
+table td {
+  overflow:hidden;
+}

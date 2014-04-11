@@ -1,0 +1,96 @@
+<!doctype html>
+<html ng-app="meancalculator">
+<head>
+  <title>Weighted mean calculator</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/xeditable.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/angular.min.js"></script>
+  <script src="js/angular-animate.min.js"></script>
+  <script src="js/angular-strap.min.js"></script>
+  <script src="js/angular-strap.tpl.min.js"></script>
+  <script src="js/xeditable.min.js"></script>
+  <script src="js/meancalculator.js"></script>
+</head>
+<body ng-controller="MeanCalculator">
+  <section id="alert-container"></section>
+  <section class="container">
+    <h1>Calculator for weighted means</h1>
+    <p class="btn-toolbar" role="toolbar">
+      <div class="btn-group">
+        <button class="btn btn-default" bs-popover data-content-template="popover/add-entry.html" data-placement="bottom" data-container="body">
+          <span class="glyphicon glyphicon-plus"></span> Add entry
+        </button>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-default" bs-popover data-content-template="popover/import-form.html" data-placement="bottom" data-container="body">
+          <span class="glyphicon glyphicon-cloud-upload"></span> Import
+        </button>
+        <a href="#" ng-href="{{downloadLink}}" class="btn btn-default" ng-click="updateDownloadLink()" target="_blank" ng-href>
+          <span class="glyphicon glyphicon-cloud-download"></span> Export
+        </a>
+      </div>
+    </p>
+    <p class="input-group" class="col-sm-6">
+      <span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
+      <input type="text" ng-model="filterString" class="form-control" placeHolder="Filter">
+    </p>
+    <table class="table table-responsive">
+      <thead>
+        <tr><th>Label</th><th>Weight</th><th>Value</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="entry in filteredEntries = (dataset.entries | filter:{label:filterString})" ng-class="{'disabled-entry': !entry.enabled}">
+        <td><span data-editable-text="entry.label" data-buttons="no" data-e-class="form-control">{{entry.label || 'empty'}}</span></td>
+        <td>{{entry.weight}}</td>
+        <td>{{entry.value}}</td>
+        <td>
+          <a ng-click="entry.enabled = true" ng-show="!entry.enabled"><span class="glyphicon glyphicon-plus-sign"></span> Enable</a>
+          <a ng-click="entry.enabled = false" ng-show="entry.enabled"><span class="glyphicon glyphicon-minus-sign"></span> Disable</a>
+          <a ng-click="dataset.remove($index)"><span class="glyphicon glyphicon-trash"></span> Delete</a>
+        </td>
+      </tr>
+      <tr ng-show="filteredEntries.length == 0">
+        <td colspan="4" class="text-center">No data found.</td>
+      </tr>
+      </tbody>
+    </table>
+    <section class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Results</h3>
+      </div>
+      <div class="panel-body">
+        Sum of weights: {{dataset.sumOfWeights()}}<br/>
+        Sum of weighted values: {{dataset.sumOfWeightedValues()}}<br/>
+        Weigthed average: {{dataset.weightedMean()}}
+      </div>
+    </section>
+  </section>
+  <script type="text/ng-template" id="popover/import-form.html">
+    <form role="form" name="importForm" ng-submit="importEntries()">
+      <div class="form-group">
+        <label for="importFile">File:</label>
+        <input type="file" name="importForm.file" id="importFile">
+      </div>
+      <button class="btn btn-primary btn-block">Import</button>
+    </form>
+  </script>
+  <script type="text/ng-template" id="popover/add-entry.html">
+    <form name="newEntryForm" ng-submit="dataset.add(newEntry)">
+      <div class="form-group">
+        <label for="newEntryLabel">Label</label>
+        <input type="text" class="form-control" name="label" id="newEntryLabel" ng-model="newEntry.label" placeholder="Label">
+      </div>
+      <div class="form-group">
+        <label for="newEntryWeight">Weight</label>
+        <input type="text" class="form-control" name="weight" id="newEntryWeight" ng-model="newEntry.weight" placeholder="Weight">
+      </div>
+      <div class="form-group">
+        <label for="newEntryValue">Value</label>
+        <input type="text" class="form-control" name="value" id="newEntryValue" ng-model="newEntry.value" placeholder="Value">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Add</button>
+    </form>
+  </script>
+</body>
+</html>
